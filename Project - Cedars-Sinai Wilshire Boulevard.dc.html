@@ -12,7 +12,9 @@
   html { scroll-behavior:smooth; }
   body { margin:0; background:oklch(0.98 0.003 90); }
   ::selection { background:oklch(0.55 0.08 240 / 0.3); }
-  @keyframes ap-fadeup { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes proj-fadeup { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes proj-scrollline { 0%,100% { opacity:0.3; transform:scaleY(0.6); } 50% { opacity:1; transform:scaleY(1); } }
+  @keyframes proj-fadein { from { opacity:0; } to { opacity:1; } }
 </style>
 </helmet>
 
@@ -29,7 +31,7 @@
     <a href="index.html" onClick="{{ goHome }}"><img src="uploads/DMRlogo.png" alt="DMR" style="height:22px; width:auto; display:block;"></a>
     <div style="display:{{ navLinksDisplay }}; gap:48px; align-items:center;">
       <a href="index.html" onClick="{{ goHome }}" style="color:oklch(0.18 0.005 250); text-decoration:none; font-size:13.5px; font-weight:500; padding-bottom:3px; border-bottom:1px solid transparent;" style-hover="border-bottom:1px solid oklch(0.18 0.005 250);">Home</a>
-      <a href="All Projects.dc.html" style="color:oklch(0.55 0.08 240); text-decoration:none; font-size:13.5px; font-weight:600; padding-bottom:3px; border-bottom:1px solid oklch(0.55 0.08 240);">Projects</a>
+      <a href="All Projects.dc.html" onClick="{{ goHome }}" style="color:oklch(0.55 0.08 240); text-decoration:none; font-size:13.5px; font-weight:600; padding-bottom:3px; border-bottom:1px solid oklch(0.55 0.08 240);">Projects</a>
       <a href="DMR Gallery.dc.html" onClick="{{ goHome }}" style="color:oklch(0.18 0.005 250); text-decoration:none; font-size:13.5px; font-weight:500; padding-bottom:3px; border-bottom:1px solid transparent;" style-hover="border-bottom:1px solid oklch(0.18 0.005 250);">Gallery</a>
       <a href="index.html#services" onClick="{{ goHome }}" style="color:oklch(0.18 0.005 250); text-decoration:none; font-size:13.5px; font-weight:500; padding-bottom:3px; border-bottom:1px solid transparent;" style-hover="border-bottom:1px solid oklch(0.18 0.005 250);">Services</a>
       <a href="index.html#about" onClick="{{ goHome }}" style="color:oklch(0.18 0.005 250); text-decoration:none; font-size:13.5px; font-weight:500; padding-bottom:3px; border-bottom:1px solid transparent;" style-hover="border-bottom:1px solid oklch(0.18 0.005 250);">About</a>
@@ -44,7 +46,7 @@
   <sc-if value="{{ mobileMenuOpen }}">
     <div style="position:fixed; inset:0; z-index:101; background:oklch(0.98 0.003 90 / 0.99); backdrop-filter:blur(16px); display:flex; flex-direction:column; justify-content:center; overflow-y:auto; padding:100px 32px 40px;">
       <a href="index.html" onClick="{{ goHome }}" style="color:oklch(0.18 0.005 250); text-decoration:none; font-size:clamp(24px,7vw,32px); font-weight:700; padding:16px 0; border-bottom:1px solid oklch(0.18 0.005 250 / 0.08); flex-shrink:0;">Home</a>
-      <a href="All Projects.dc.html" style="color:oklch(0.55 0.08 240); text-decoration:none; font-size:clamp(24px,7vw,32px); font-weight:700; padding:16px 0; border-bottom:1px solid oklch(0.18 0.005 250 / 0.08); flex-shrink:0;">Projects</a>
+      <a href="All Projects.dc.html" onClick="{{ goHome }}" style="color:oklch(0.55 0.08 240); text-decoration:none; font-size:clamp(24px,7vw,32px); font-weight:700; padding:16px 0; border-bottom:1px solid oklch(0.18 0.005 250 / 0.08); flex-shrink:0;">Projects</a>
       <a href="DMR Gallery.dc.html" onClick="{{ goHome }}" style="color:oklch(0.18 0.005 250); text-decoration:none; font-size:clamp(24px,7vw,32px); font-weight:700; padding:16px 0; border-bottom:1px solid oklch(0.18 0.005 250 / 0.08); flex-shrink:0;">Gallery</a>
       <a href="index.html#services" onClick="{{ goHome }}" style="color:oklch(0.18 0.005 250); text-decoration:none; font-size:clamp(24px,7vw,32px); font-weight:700; padding:16px 0; border-bottom:1px solid oklch(0.18 0.005 250 / 0.08); flex-shrink:0;">Services</a>
       <a href="index.html#about" onClick="{{ goHome }}" style="color:oklch(0.18 0.005 250); text-decoration:none; font-size:clamp(24px,7vw,32px); font-weight:700; padding:16px 0; border-bottom:1px solid oklch(0.18 0.005 250 / 0.08); flex-shrink:0;">About</a>
@@ -52,44 +54,65 @@
     </div>
   </sc-if>
 
-  <!-- HEADER -->
-  <section style="padding:190px 48px 56px; max-width:1400px; margin:0 auto;">
-    <div style="font-size:13px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:oklch(0.55 0.08 240); margin-bottom:16px;">All Projects</div>
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap;">
-      <h1 style="font-size:clamp(32px,4.5vw,52px); letter-spacing:-0.02em; font-weight:700; margin:0; max-width:640px;">Commercial work across Los Angeles.</h1>
-      <p style="font-size:16px; color:oklch(0.5 0.005 250); max-width:380px; margin:0;">Hospitality, retail, healthcare, creative office, and adaptive reuse — browse every completed build.</p>
+  <!-- SCROLL PROGRESS -->
+  <div style="position:fixed; top:0; left:0; height:3px; width:{{ scrollProgress }}%; background:oklch(0.55 0.08 240); z-index:150; transition:width 0.1s linear;"></div>
+
+  <!-- HERO IMAGE -->
+  <section style="position:relative; height:82vh; min-height:520px; overflow:hidden;">
+    <div style="position:absolute; top:-10%; left:0; right:0; bottom:-10%; background:linear-gradient(180deg, oklch(0.06 0.005 250 / 0.55) 0%, oklch(0.08 0.005 250 / 0.15) 45%, oklch(0.05 0.005 250 / 0.9) 100%), url('{{ project.heroPhoto }}'); background-size:cover; background-position:center; transform:translateY({{ heroParallax }}px); will-change:transform;"></div>
+    <div style="position:relative; z-index:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end; padding:0 48px 64px; max-width:1400px; margin:0 auto;">
+      <a href="All Projects.dc.html" onClick="{{ goHome }}" style="display:inline-flex; align-items:center; gap:8px; color:oklch(0.85 0.02 90); text-decoration:none; font-size:13px; font-weight:500; margin-bottom:24px; width:fit-content;" style-hover="color:oklch(0.98 0.003 90);">← All Projects</a>
+      <div style="font-size:13px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:oklch(0.75 0.06 240); margin-bottom:14px; animation:proj-fadeup 0.7s ease 0.1s both;">{{ project.category }}</div>
+      <h1 style="font-size:clamp(34px,5.5vw,64px); line-height:1.05; letter-spacing:-0.02em; font-weight:600; color:oklch(0.98 0.003 90); margin:0; animation:proj-fadeup 0.8s cubic-bezier(0.2,0.8,0.2,1) 0.2s both;">{{ project.name }}</h1>
+      <div style="font-size:15px; color:oklch(0.88 0.01 90 / 0.85); margin-top:14px; animation:proj-fadeup 0.8s ease 0.28s both;">{{ project.address }}</div>
+      <div style="display:flex; align-items:center; gap:10px; margin-top:26px; font-size:11.5px; letter-spacing:0.1em; color:oklch(0.85 0.02 90 / 0.8); text-transform:uppercase; animation:proj-fadeup 0.8s ease 0.35s both;">
+        <span style="display:inline-block; width:1px; height:26px; background:oklch(0.92 0.006 80 / 0.5); animation:proj-scrollline 2.2s ease-in-out infinite;"></span>
+        Scroll to explore
+      </div>
     </div>
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:40px;">
-      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
-        <button onClick="{{ f.onSelect }}" style="padding:10px 20px; border-radius:100px; border:1px solid {{ f.borderColor }}; background:{{ f.bg }}; color:{{ f.color }}; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.25s ease; white-space:nowrap;">{{ f.label }}</button>
+  </section>
+
+  <!-- PROJECT META + DESCRIPTION -->
+  <section data-reveal style="max-width:1400px; margin:0 auto; padding:80px 48px 40px; display:grid; grid-template-columns:{{ overviewColumns }}; gap:64px; opacity:{{ revealOpacity }}; transform:{{ revealTransform }}; transition:opacity 0.8s ease, transform 0.8s ease;">
+    <div>
+      <div style="font-size:12.5px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.55 0.08 240); margin-bottom:16px;">Overview</div>
+      <p style="font-size:20px; line-height:1.65; color:oklch(0.25 0.005 250); margin:0 0 20px; max-width:640px; letter-spacing:-0.005em;">{{ project.description }}</p>
+      <p style="font-size:16px; line-height:1.7; color:oklch(0.4 0.005 250); margin:0; max-width:640px;">{{ project.description2 }}</p>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px; background:oklch(0.9 0.003 90); border-radius:16px; overflow:hidden; align-content:start; height:fit-content;">
+      <sc-for list="{{ project.meta }}" as="m" hint-placeholder-count="5">
+        <div style="background:oklch(1 0 0); padding:22px 20px; transition:background 0.3s ease;" style-hover="background:oklch(0.97 0.005 90);">
+          <div style="font-size:10.5px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.55 0.005 90); margin-bottom:6px;">{{ m.label }}</div>
+          <div style="font-size:14.5px; font-weight:600; color:oklch(0.18 0.005 250); line-height:1.4;">{{ m.value }}</div>
+        </div>
       </sc-for>
     </div>
   </section>
 
-  <!-- PROJECTS GRID -->
-  <section style="max-width:1400px; margin:0 auto; padding:16px 48px 160px;">
-    <div style="display:grid; grid-template-columns:{{ gridColumns }}; gap:36px;">
-      <sc-for list="{{ visibleProjects }}" as="p" hint-placeholder-count="7">
-        <a href="{{ p.link }}" onClick="{{ p.onOpen }}" data-tilt style="grid-column:{{ p.span }}; text-decoration:none; color:inherit; display:block; border-radius:22px; overflow:hidden; background:oklch(1 0 0); box-shadow:0 1px 3px oklch(0.18 0.005 250 / 0.06); transition:box-shadow 0.35s ease, transform 0.35s ease; cursor:pointer; animation:ap-fadeup 0.6s ease both;" style-hover="box-shadow:0 26px 52px oklch(0.18 0.005 250 / 0.16); transform:translateY(-4px);" onMouseEnter="{{ p.onEnter }}" onMouseLeave="{{ p.onLeave }}">
-          <div style="height:{{ p.imgHeight }}; position:relative; overflow:hidden;">
-            <div style="position:absolute; inset:0; background-image:url('{{ p.photo }}'); background-size:cover; background-position:center; transition:transform 0.6s ease;"></div>
-            <sc-if value="{{ p.hasAfter }}">
-              <div style="position:absolute; inset:0; background-image:url('{{ p.photoAfter }}'); background-size:cover; background-position:center; opacity:{{ p.overlayOpacity }}; transition:opacity 0.6s ease;"></div>
-            </sc-if>
-            <div style="position:absolute; inset:0; background:linear-gradient(0deg, oklch(0.05 0.005 250 / 0.65) 0%, transparent 45%);"></div>
-            <div style="position:absolute; bottom:18px; left:22px; right:22px; display:flex; justify-content:space-between; align-items:flex-end;">
-              <div style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.85 0.02 90);">{{ p.category }}</div>
-              <span style="width:34px; height:34px; border-radius:50%; background:oklch(1 0 0 / 0.15); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; color:oklch(0.98 0.003 90); font-size:15px; flex-shrink:0;">→</span>
-            </div>
+  <!-- PHOTO GRID -->
+  <section style="max-width:1400px; margin:0 auto; padding:32px 48px 140px;">
+    <div style="column-count:{{ galleryColumnCount }}; column-gap:20px; perspective:1400px;">
+      <sc-for list="{{ galleryPhotos }}" as="g" hint-placeholder-count="9">
+        <div data-spotlight onClick="{{ g.onOpen }}" style="position:relative; break-inside:avoid; margin-bottom:20px; border-radius:18px; overflow:hidden; cursor:pointer; box-shadow:0 1px 3px oklch(0.18 0.005 250 / 0.08); transition:box-shadow 0.35s ease;" style-hover="box-shadow:0 24px 48px oklch(0.18 0.005 250 / 0.18);">
+          <img src="{{ g.photo }}" alt="{{ project.name }} detail" style="display:block; width:100%; height:auto;"/>
+          <div style="position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity 0.4s ease; background:radial-gradient(circle 260px at var(--mx,50%) var(--my,50%), oklch(1 0 0 / 0.18), transparent 70%);"></div>
+          <div style="position:absolute; bottom:0; left:0; right:0; padding:20px 18px; background:linear-gradient(0deg, oklch(0.05 0.005 250 / 0.55), transparent); opacity:0; transition:opacity 0.3s ease; display:flex; align-items:center; gap:8px;" style-hover="opacity:1;">
+            <span style="width:30px; height:30px; border-radius:50%; background:oklch(1 0 0 / 0.15); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; color:oklch(0.98 0.003 90); font-size:15px;">⤢</span>
           </div>
-          <div style="padding:24px 26px 28px;">
-            <div style="font-size:21px; font-weight:700; letter-spacing:-0.01em; margin-bottom:6px;">{{ p.name }}</div>
-            <div style="font-size:13px; color:oklch(0.55 0.005 90); margin-bottom:10px;">{{ p.address }}</div>
-            <div style="font-size:14.5px; line-height:1.55; color:oklch(0.5 0.005 250);">{{ p.description }}</div>
-          </div>
-        </a>
+        </div>
       </sc-for>
     </div>
+    <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeLightbox }}" style="position:fixed; inset:0; z-index:200; background:oklch(0.05 0.005 250 / 0.94); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:40px; cursor:zoom-out; animation:proj-fadein 0.25s ease both;">
+        <img src="{{ lightboxPhoto }}" alt="Project detail large" style="max-width:100%; max-height:100%; border-radius:8px; box-shadow:0 20px 60px oklch(0 0 0 / 0.5);"/>
+        <button onClick="{{ closeLightbox }}" style="position:absolute; top:32px; right:40px; background:none; border:none; color:oklch(0.98 0.003 90); font-size:36px; line-height:1; cursor:pointer; padding:8px;">×</button>
+      </div>
+    </sc-if>
+  </section>
+
+  <!-- BACK TO PROJECTS -->
+  <section style="max-width:1400px; margin:0 auto; padding:0 48px 100px; display:flex; justify-content:center;">
+    <a href="All Projects.dc.html" onClick="{{ goHome }}" data-magnetic style="display:inline-flex; align-items:center; gap:10px; background:oklch(0.18 0.005 250); color:oklch(0.98 0.003 90); padding:16px 30px; border-radius:100px; text-decoration:none; font-size:13.5px; font-weight:600; letter-spacing:0.03em; transition:background 0.25s ease;" style-hover="background:oklch(0.55 0.08 240);">← Back to All Projects</a>
   </section>
 
   <!-- FOOTER -->
@@ -117,7 +140,7 @@
       <div style="display:flex; flex-direction:column; gap:14px;">
         <div style="font-size:12.5px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.5 0.005 90); margin-bottom:6px;">Navigate</div>
         <a href="index.html" onClick="{{ goHome }}" style="color:oklch(0.75 0.005 90); text-decoration:none; font-size:14.5px; width:fit-content;" style-hover="color:oklch(0.98 0.003 90);">Home</a>
-        <a href="All Projects.dc.html" style="color:oklch(0.75 0.005 90); text-decoration:none; font-size:14.5px; width:fit-content;" style-hover="color:oklch(0.98 0.003 90);">Projects</a>
+        <a href="All Projects.dc.html" onClick="{{ goHome }}" style="color:oklch(0.75 0.005 90); text-decoration:none; font-size:14.5px; width:fit-content;" style-hover="color:oklch(0.98 0.003 90);">Projects</a>
         <a href="DMR Gallery.dc.html" onClick="{{ goHome }}" style="color:oklch(0.75 0.005 90); text-decoration:none; font-size:14.5px; width:fit-content;" style-hover="color:oklch(0.98 0.003 90);">Gallery</a>
         <a href="index.html#services" onClick="{{ goHome }}" style="color:oklch(0.75 0.005 90); text-decoration:none; font-size:14.5px; width:fit-content;" style-hover="color:oklch(0.98 0.003 90);">Services</a>
         <a href="index.html#about" onClick="{{ goHome }}" style="color:oklch(0.75 0.005 90); text-decoration:none; font-size:14.5px; width:fit-content;" style-hover="color:oklch(0.98 0.003 90);">About</a>
@@ -149,7 +172,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { isMobile: false, mobileMenuOpen: false, cursorEnabled: false, cursorHover: false, pageTransitioning: false, hoveredIdx: null, activeFilter: 'All' };
+  state = { isMobile: false, mobileMenuOpen: false, lightboxPhoto: null, cursorEnabled: false, cursorHover: false, pageTransitioning: false, rawScrollY: 0, scrollProgress: 0, revealed: false };
   cursorDotRef = React.createRef();
   cursorRingRef = React.createRef();
   componentDidMount() {
@@ -161,6 +184,13 @@ class Component extends DCLogic {
     };
     window.addEventListener('resize', this._onResize);
     this._onResize();
+    this._onScroll = () => {
+      const doc = document.documentElement;
+      const progress = doc.scrollHeight > doc.clientHeight ? (window.scrollY / (doc.scrollHeight - doc.clientHeight)) * 100 : 0;
+      this.setState({ rawScrollY: window.scrollY, scrollProgress: progress });
+      if (!this.state.revealed && window.scrollY > 80) this.setState({ revealed: true });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
     this._mouse = { x: -100, y: -100 };
     this._onMouseMove = (e) => { this._mouse.x = e.clientX; this._mouse.y = e.clientY; };
     window.addEventListener('mousemove', this._onMouseMove);
@@ -215,6 +245,7 @@ class Component extends DCLogic {
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('mousemove', this._onMouseMove);
     document.removeEventListener('mouseover', this._onMouseOver);
     this._cursorRafActive = false;
@@ -238,48 +269,39 @@ class Component extends DCLogic {
     if (this._scrollY != null) { window.scrollTo(0, this._scrollY); this._scrollY = null; }
   }
   renderVals() {
-    const rawProjects = [
-      { name: 'David Zwirner Los Angeles', category: 'Art Gallery', size: 'large', address: '606 N. Western Avenue, Los Angeles, CA 90004', description: 'Ground-up construction of a three-story, 14,000-square-foot flagship art gallery in Melrose Hill, with exhibition rooms, private offices, and a monumental mahogany-and-glass entrance.', photo: 'uploads/imgi_15_DavidZwirner-GeneralContractor-exterior-ReaumeRichardson-Wide_AdaptiveReuse-3a2d6dbe.jpg', photoAfter: 'uploads/imgi_9_Header-09366308.jpg', link: 'Project - David Zwirner Los Angeles.dc.html' },
-      { name: 'The Garland Building', category: 'Historic Restoration', size: 'small', address: '740-748 S Broadway, Los Angeles, CA', description: 'Historic restoration of an 11-story Beaux-Arts landmark in Downtown LA, blending restored character with modern creative office space.', photo: 'uploads/imgi_19_Stairs2-ReaumeRichardson_AdaptiveReuse_740-1.jpg', photoAfter: 'uploads/imgi_18_Stairs1-ReaumeRichardson_AdaptiveReuse_740-1.jpg', link: 'Project - The Garland Building.dc.html' },
-      { name: 'Warby Parker Abbot Kinney', category: 'Retail', size: 'small', address: '1422 Abbot Kinney Boulevard, Los Angeles, CA 90291', description: 'Retail build-out transforming an Abbot Kinney storefront into Warby Parker\u2019s first stand-alone West Coast location.', photo: 'uploads/imgi_9_WARBY_PARKER_VENICE_05_Square-37b27911.jpg', photoAfter: 'uploads/imgi_8_WARBY_PARKER_VENICE_14-e61b6ca7.jpg', link: 'Project - Warby Parker Venice.dc.html' },
-      { name: 'AKA Hotel Beverly Hills', category: 'Hospitality', size: 'large', address: '155 N. Crescent Drive, Beverly Hills, CA 90210', description: 'Transformation of an existing apartment complex into a 115,000-square-foot luxury extended-stay hotel with 88 fully furnished suites.', photo: 'uploads/imgi_9_AKA-Hotel-Beverly-Hills-Reaume-Richardson-los-angeles-construction-c77ca8dc.jpg', photoAfter: 'uploads/imgi_10_AKA-Hotel-Beverly-Hills-entrance-Reaume-Richardson-los-angeles-construction-ae3fa460.jpg', link: 'Project - AKA Beverly Hills.dc.html' },
-      { name: 'Method Studios', category: 'Creative Office', size: 'small', address: '3401 Exposition Boulevard, Santa Monica, CA 90404', description: 'Adaptive reuse of an existing warehouse into a state-of-the-art post-production and visual-effects facility.', photo: 'uploads/imgi_9_Company3-Method-studios-adaptive-reuse-Reaume-Richardson-los-angeles-construction-029aad25.jpg', photoAfter: 'uploads/imgi_14_Company3-Method-studios-screening-room-reuse-Reaume-Richardson-los-angeles-construction-7cdc0188.jpg', link: 'Project - Method Studios.dc.html' },
-      { name: '1 Hotel West Hollywood', category: 'Hospitality', size: 'large', address: '8490 Sunset Boulevard, West Hollywood, CA 90069', description: 'Renovation and sustainable rebranding of two existing 10-story towers into a nature-inspired luxury hotel with 283 guest rooms.', photo: 'uploads/imgi_9_Our-Projects-One-Hotel-West-Hollywood-Reaume-Richardson-los-angeles-construction-1.jpg', photoAfter: 'uploads/imgi_14_Our-Projects-Pool-One-Hotel-West-Hollywood-Reaume-Richardson-los-angeles-construction.jpg', link: 'Project - 1 Hotel West Hollywood.dc.html' },
-      { name: 'Cedars-Sinai Primary Care — Tarzana', category: 'Healthcare', size: 'small', address: '18133 Ventura Boulevard, Suite 405, Tarzana, CA 91356', description: 'An approximately 18,000-square-foot healthcare tenant improvement bringing primary-care and internal-medicine services into a modern clinical environment, with metal framing, drywall, insulation, taping and finishing.', photo: 'uploads/imgi_38_Picture-5.jpg', photoAfter: 'uploads/imgi_36_Picture-3-1.jpg', link: 'Project - Cedars-Sinai Tarzana.dc.html' },
-      { name: 'Cedars-Sinai Medical Office Towers', category: 'Healthcare', size: 'small', address: '8631\u20138635 W. Third Street, Los Angeles, CA 90048', description: 'An approximately 8,000-square-foot healthcare tenant improvement transforming a traditional clinical suite into a refined, hospitality-inspired environment with sculptural reception, curved forms and warm finishes.', photo: 'uploads/imgi_57_Picture-2.jpg', photoAfter: 'uploads/imgi_58_Picture-3.jpg', link: 'Project - Cedars-Sinai Medical Office Towers.dc.html' },
-      { name: 'Cedars-Sinai Marina Towers — 5th Floor', category: 'Healthcare', size: 'large', address: '4676 Admiralty Way, Marina del Rey, CA 90292', description: 'A 25,000-square-foot outpatient medical build-out overlooking the harbor, designed by Perkins&Will with sculptural reception, amber glass fixtures and a coastal-inspired material palette.', photo: 'uploads/imgi_65_Picture-2.jpg', photoAfter: 'uploads/imgi_66_Picture-5.jpg', link: 'Project - Cedars-Sinai Marina Towers.dc.html' },
-      { name: 'Cedars-Sinai Marina Towers Breast Imaging Center', category: 'Healthcare', size: 'small', address: '4640 Admiralty Way, Suite 102, Marina del Rey, CA 90292', description: 'An award-winning 4,450-square-foot breast imaging center with a dramatic botanical installation, sculptural reception alcove and brass pendant lighting.', photo: 'uploads/imgi_76_MBC1.jpg', photoAfter: 'uploads/imgi_77_MBC2.jpg', link: 'Project - Cedars-Sinai Breast Imaging Center.dc.html' },
-      { name: 'MINK Advanced Imaging — Admiralty Way', category: 'Healthcare', size: 'small', address: '4640 Admiralty Way, Suite 100, Marina del Rey, CA 90292', description: 'A 12,000-square-foot diagnostic imaging center for Cedars-Sinai partner RadNet, pairing CT, MRI and X-ray suites with a warm, hospitality-inspired reception and staff lounge.', photo: 'uploads/imgi_88_01.jpg', photoAfter: 'uploads/imgi_97_10.jpg', link: 'Project - MINK Advanced Imaging.dc.html' },
-      { name: 'City of Hope Palmdale Urology Clinic', category: 'Healthcare', size: 'small', address: '38660 Medical Center Drive, Suite A380, Palmdale, CA 93551', description: 'A 5,700-square-foot urology clinic build-out on a first-generation shell floor, with sage-toned exam rooms, a glass-enclosed staff pavilion and sweeping Antelope Valley views.', photo: 'uploads/imgi_104_Picture-35_1667569808.586112_optimized_1667569808.785193.webp', photoAfter: 'uploads/imgi_98_Picture-17-2_1667569810.370816_optimized_1667569810.61884.webp', link: 'Project - City of Hope Palmdale Urology Clinic.dc.html' },
-      { name: 'N. Robertson Rehabilitation & Performance Center', category: 'Healthcare', size: 'small', address: 'North Robertson Boulevard, Los Angeles, CA', description: 'A 10,000-square-foot physical therapy and performance build-out with an open rehab gym, suspended wood acoustic canopy and calming coastal-blue palette.', photo: 'uploads/imgi_115_Picture-33_1667569181.95887_optimized_1667569182.176954.webp', photoAfter: 'uploads/imgi_113_Picture-20-1_1667569182.868606_optimized_1667569183.088512.webp', link: 'Project - N. Robertson Rehabilitation & Performance Center.dc.html' },
-      { name: 'Cedars-Sinai Tarzana Atrium', category: 'Healthcare', size: 'large', address: '5411 Etiwanda Avenue, Second Floor, Tarzana, CA 91356', description: 'An award-winning 14,000-square-foot multispecialty medical office with curved wood reception desks, a blue gradient feature wall and arched patient corridors.', photo: 'uploads/imgi_117_Picture-4_1667568555.3641949_optimized_1667568555.5051088.webp', photoAfter: 'uploads/imgi_118_Picture-5-1_1667568555.217181_optimized_1667568555.354439.webp', link: 'Project - Cedars-Sinai Tarzana Atrium.dc.html' },
-      { name: 'Cedars-Sinai California Heart Center', category: 'Healthcare', size: 'large', address: '8670 Wilshire Boulevard, Beverly Hills, CA 90211', description: 'A 23,000-square-foot outpatient cardiovascular facility with a luminous golden botanical feature wall, curved information desks and etched glass partitions.', photo: 'uploads/imgi_130_01-Picture-51_1667567563.757639_optimized_1667567563.909636.webp', photoAfter: 'uploads/imgi_133_04-Picture-37_1667567564.17208_optimized_1667567564.3042998.webp', link: 'Project - Cedars-Sinai California Heart Center.dc.html' },
-      { name: 'City of Hope Glendora Medical Suites', category: 'Healthcare', size: 'small', address: '412 West Carroll Avenue, Suite 200, Glendora, CA 91741', description: 'A 12,000-square-foot outpatient oncology suite with a walnut-clad reception counter, citron-yellow accents and daylit exam rooms.', photo: 'uploads/imgi_143_Picture-1.webp', photoAfter: 'uploads/imgi_144_Picture-4.webp', link: 'Project - City of Hope Glendora Medical Suites.dc.html' },
-      { name: 'West Beverly Boulevard Medical Suite', category: 'Healthcare', size: 'small', address: 'West Beverly Boulevard, Los Angeles, CA', description: 'A 3,000-square-foot diagnostic imaging suite built around a ceiling-suspended digital X-ray system with a spa-like accessible restroom.', photo: 'uploads/imgi_150_01-Picture-3.webp', photoAfter: 'uploads/imgi_151_02-Picture-4.webp', link: 'Project - West Beverly Boulevard Medical Suite.dc.html' },
-      { name: 'Admiralty Way Medical Suite', category: 'Healthcare', size: 'small', address: 'Admiralty Way, Marina del Rey, CA', description: 'A 10,000-square-foot coastal-inspired medical buildout with a walnut-clad reception pavilion, harbor-blue accents and a tide-like tiled restroom.', photo: 'uploads/imgi_156_Picture-3.webp', photoAfter: 'uploads/imgi_157_Picture-5-1-1.webp', link: 'Project - Admiralty Way Medical Suite.dc.html' },
-      { name: 'Admiralty Way — Ninth Floor', category: 'Healthcare', size: 'large', address: 'Admiralty Way, Marina del Rey, CA', description: 'An 18,000-square-foot healthcare, administrative and education buildout with a sculptural black-slat reception ceiling, a large training room and sweeping marina views.', photo: 'uploads/imgi_164_Picture-15.webp', photoAfter: 'uploads/imgi_172_Picture-20-3.webp', link: 'Project - Admiralty Way Ninth Floor.dc.html' },
-      { name: 'Cedars-Sinai Wilshire Boulevard', category: 'Healthcare', size: 'large', address: 'Wilshire Boulevard, Los Angeles, CA', description: 'A 16,000-square-foot outpatient suite with a marble reception desk, a faceted charcoal feature wall and 17+ clinical rooms.', photo: 'uploads/imgi_179_Picture-18.webp', photoAfter: 'uploads/imgi_175_Picture-23.webp', link: 'Project - Cedars-Sinai Wilshire Boulevard.dc.html' },
-    ];
-    const categories = ['All', ...Array.from(new Set(rawProjects.map((p) => p.category)))];
-    const filters = categories.map((c) => ({
-      label: c,
-      onSelect: () => this.setState({ activeFilter: c }),
-      bg: this.state.activeFilter === c ? 'oklch(0.18 0.005 250)' : 'oklch(1 0 0)',
-      color: this.state.activeFilter === c ? 'oklch(0.98 0.003 90)' : 'oklch(0.4 0.005 250)',
-      borderColor: this.state.activeFilter === c ? 'oklch(0.18 0.005 250)' : 'oklch(0.85 0.003 90)',
-    }));
-    const filtered = this.state.activeFilter === 'All' ? rawProjects : rawProjects.filter((p) => p.category === this.state.activeFilter);
-    const visibleProjects = filtered.map((p, i) => ({
-      ...p,
-      span: (!this.state.isMobile && this.state.activeFilter === 'All' && p.size === 'large') ? 'span 2' : 'span 1',
-      imgHeight: this.state.isMobile ? '240px' : (this.state.activeFilter === 'All' && p.size === 'large' ? '380px' : '280px'),
-      hasAfter: !!p.photoAfter,
-      overlayOpacity: this.state.hoveredIdx === i ? 1 : 0,
-      onEnter: () => this.setState({ hoveredIdx: i }),
-      onLeave: () => this.setState({ hoveredIdx: null }),
-      onOpen: (e) => { e.preventDefault(); this.setState({ pageTransitioning: true }); setTimeout(() => { window.location.href = p.link; }, 420); },
-    }));
+    const project = {
+      name: 'Cedars-Sinai Wilshire Boulevard',
+      category: 'Healthcare · Outpatient Care · Diagnostic Imaging · Tenant Improvement',
+      address: 'Wilshire Boulevard, Los Angeles, California',
+      heroPhoto: 'uploads/imgi_179_Picture-18.webp',
+      description: 'The Cedars-Sinai Wilshire Boulevard project transforms a substantial medical suite into a sophisticated outpatient environment where clinical efficiency is softened by the language of hospitality. Encompassing an estimated 16,000 square feet, the single-floor buildout brings together public waiting areas, reception and clinical workstations, more than a dozen examination and consultation rooms, diagnostic X-ray facilities, staff work areas and supporting patient-care spaces.',
+      description2: 'The primary reception presents a composed palette of pale oak, dramatically veined stone and charcoal finishes, with a marble-inspired transaction desk appearing to float above a band of concealed illumination. Elsewhere, a second clinical station is anchored by a soaring faceted feature wall of charcoal panels divided by fine metallic reveals beneath a constellation of suspended globe lights. Our work provided the concealed framework behind these finished environments through metal-stud framing, drywall assemblies, soffits, ceiling transitions, insulation, taping and high-quality finishing.',
+      meta: [
+        { label: 'Client', value: 'Cedars-Sinai' },
+        { label: 'General Contractor', value: 'TIS Construction Services' },
+        { label: 'Location', value: 'Wilshire Boulevard, Los Angeles, California' },
+        { label: 'Project Size', value: 'Approximately 16,000 sq ft \u2014 single-floor suite' },
+        { label: 'Program', value: '17+ clinical rooms, X-ray suite, breakroom, admin space' },
+      ],
+      photos: [
+        'uploads/imgi_179_Picture-18.webp',
+        'uploads/imgi_175_Picture-23.webp',
+        'uploads/imgi_176_Picture-12-2.webp',
+        'uploads/imgi_177_Picture-25-1.webp',
+        'uploads/imgi_178_Picture-16.webp',
+        'uploads/imgi_180_Picture-37.webp',
+        'uploads/imgi_181_Picture-1-Copy.webp',
+        'uploads/imgi_182_Picture-8-2.webp',
+        'uploads/imgi_183_Picture-10-4.webp',
+      ],
+    };
     return {
+      project,
+      heroParallax: Math.min(this.state.rawScrollY * 0.15, 90),
+      scrollProgress: this.state.scrollProgress,
+      overviewColumns: this.state.isMobile ? '1fr' : '1.3fr 1fr',
+      revealOpacity: this.state.revealed ? 1 : 0,
+      revealTransform: this.state.revealed ? 'translateY(0)' : 'translateY(24px)',
       cursorDotRef: this.cursorDotRef,
       cursorRingRef: this.cursorRingRef,
       cursorDisplay: this.state.cursorEnabled ? 'block' : 'none',
@@ -294,9 +316,11 @@ class Component extends DCLogic {
         this._unlockScroll();
         setTimeout(() => { window.location.href = href; }, 420);
       },
-      filters,
-      gridColumns: this.state.isMobile ? '1fr' : 'repeat(3, 1fr)',
-      visibleProjects,
+      galleryPhotos: project.photos.map((photo) => ({ photo, onOpen: () => { this.setState({ lightboxPhoto: photo }); document.body.style.overflow = 'hidden'; } })),
+      galleryColumnCount: this.state.isMobile ? 1 : 2,
+      lightboxOpen: !!this.state.lightboxPhoto,
+      lightboxPhoto: this.state.lightboxPhoto,
+      closeLightbox: () => { this.setState({ lightboxPhoto: null }); document.body.style.overflow = ''; },
       footerSidePadding: this.state.isMobile ? '24px' : '48px',
       footerGridColumns: this.state.isMobile ? '1fr' : '1.4fr 1fr 1fr 1fr',
       footerGridGap: this.state.isMobile ? '36px' : '48px',
