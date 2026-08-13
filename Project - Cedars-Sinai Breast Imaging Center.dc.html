@@ -93,7 +93,7 @@
   <section style="max-width:1400px; margin:0 auto; padding:32px 48px 140px;">
     <div style="column-count:{{ galleryColumnCount }}; column-gap:20px; perspective:1400px;">
       <sc-for list="{{ galleryPhotos }}" as="g" hint-placeholder-count="10">
-        <div data-spotlight onClick="{{ g.onOpen }}" style="position:relative; break-inside:avoid; margin-bottom:20px; border-radius:18px; overflow:hidden; cursor:pointer; box-shadow:0 1px 3px oklch(0.18 0.005 250 / 0.08); transition:box-shadow 0.35s ease;" style-hover="box-shadow:0 24px 48px oklch(0.18 0.005 250 / 0.18);">
+        <div data-spotlight data-reveal-photo onClick="{{ g.onOpen }}" style="position:relative; break-inside:avoid; margin-bottom:20px; border-radius:18px; overflow:hidden; cursor:pointer; box-shadow:0 1px 3px oklch(0.18 0.005 250 / 0.08); opacity:0; transform:translateY(24px); transition:box-shadow 0.35s ease, opacity 0.6s ease, transform 0.6s ease;" style-hover="box-shadow:0 24px 48px oklch(0.18 0.005 250 / 0.18);">
           <img src="{{ g.photo }}" alt="{{ project.name }} detail" style="display:block; width:100%; height:auto;"/>
           <div style="position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity 0.4s ease; background:radial-gradient(circle 260px at var(--mx,50%) var(--my,50%), oklch(1 0 0 / 0.18), transparent 70%);"></div>
           <div style="position:absolute; bottom:0; left:0; right:0; padding:20px 18px; background:linear-gradient(0deg, oklch(0.05 0.005 250 / 0.55), transparent); opacity:0; transition:opacity 0.3s ease; display:flex; align-items:center; gap:8px;" style-hover="opacity:1;">
@@ -242,8 +242,20 @@ class Component extends DCLogic {
       card.addEventListener('mouseleave', onLeave);
       this._spotlightCleanup.push(() => { card.removeEventListener('mousemove', onMove); card.removeEventListener('mouseleave', onLeave); });
     });
+    const revealEls = Array.from(document.querySelectorAll('[data-reveal-photo]'));
+    this._revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const idx = revealEls.indexOf(entry.target);
+          setTimeout(() => { entry.target.style.opacity = '1'; entry.target.style.transform = 'translateY(0)'; }, (idx % 4) * 90);
+          this._revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach((el) => this._revealObserver.observe(el));
   }
   componentWillUnmount() {
+    if (this._revealObserver) this._revealObserver.disconnect();
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('mousemove', this._onMouseMove);
